@@ -40,6 +40,9 @@ posicao_anterior_saida = None
 contador_entrada = 0
 contador_saida = 0
 
+# Definir uma margem de erro para considerar que a pessoa cruzou a linha de divisão
+margem_de_erro = 20
+
 while True:
     # Capturar frame por frame
     ret, frame = video.read()
@@ -52,35 +55,35 @@ while True:
     cv2.line(frame, (linha_divisoria, 0), (linha_divisoria, altura), (255, 255, 255), 2)
 
     # Definir regiões de interesse (ROIs) para entrada e saída
-    margem_entrada = 50
-    margem_saida = 50
+    margem_entrada = 30
+    margem_saida = 30
     roi_entrada = [linha_divisoria - margem_entrada, 0, margem_entrada, altura]
     roi_saida = [linha_divisoria, 0, margem_saida, altura]
 
     # Pré-processamento do frame
-    frame_redimensionado = cv2.resize(frame, (250, 250)) / 255.0
+    frame_redimensionado = cv2.resize(frame, (64,64)) / 255.0
     frame_redimensionado = np.expand_dims(frame_redimensionado, axis=0)
 
     # Detecção de pessoas
     predict = modelo.predict(frame_redimensionado)
     classe_prevista = np.argmax(predict)
-    
+    print(classe_prevista)
     # Verificar se uma pessoa foi detectada
-    if classe_prevista == 0:
+    if classe_prevista == 1:
         # Verificar a presença de uma pessoa na ROI antes de tentar verificar a direção do movimento
         if pessoa_dentro_roi(frame, roi_entrada) or pessoa_dentro_roi(frame, roi_saida):
-            print('entrou')
-            # Atualizar a posição anterior apenas se uma pessoa for detectada
             if posicao_anterior_entrada is not None and pessoa_dentro_roi(frame, roi_entrada):
-                print("Aqui")
                 posicao_atual_entrada = (linha_divisoria, frame.shape[0] // 2)
-                if posicao_atual_entrada[0] < posicao_anterior_entrada[0]:
+                print(posicao_atual_entrada[0] < posicao_anterior_entrada[0] + margem_de_erro)
+
+                print("Posicao anterior entrada:", posicao_anterior_entrada)
+                print("Posicao atual entrada:", posicao_atual_entrada)
+                if posicao_atual_entrada[0] < posicao_anterior_entrada[0] + margem_de_erro:
                     contador_entrada += 1
                     print("Pessoa entrando")
             elif posicao_anterior_saida is not None and pessoa_dentro_roi(frame, roi_saida):
-                print("BEm aqui")
                 posicao_atual_saida = (linha_divisoria, frame.shape[0] // 2)
-                if posicao_atual_saida[0] > posicao_anterior_saida[0]:
+                if posicao_atual_saida[0] > posicao_anterior_saida[0] - margem_de_erro:
                     contador_saida += 1
                     print("Pessoa saindo")
     else:
@@ -88,9 +91,10 @@ while True:
         posicao_anterior_entrada = None
         posicao_anterior_saida = None
 
-    # Atualizar a posição anterior
-    posicao_anterior_entrada = (linha_divisoria, frame.shape[0] // 2)
-    posicao_anterior_saida = (linha_divisoria, frame.shape[0] // 2)
+    # Atualizar a posição anterior apenas se uma pessoa foi detectada
+    if pessoa_dentro_roi(frame, roi_entrada) or pessoa_dentro_roi(frame, roi_saida):
+        posicao_anterior_entrada = (linha_divisoria, frame.shape[0] // 2)
+        posicao_anterior_saida = (linha_divisoria, frame.shape[0] // 2)
 
     # Mostrar os contadores
     print(f"Entradas: {contador_entrada}, Saídas: {contador_saida}")
