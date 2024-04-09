@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
+
 # Função para verificar se uma pessoa está dentro da ROI
 def pessoa_dentro_roi(frame, roi):
     x, y, w, h = roi
@@ -19,6 +20,7 @@ def pessoa_dentro_roi(frame, roi):
 
     # Encontrando contornos na máscara
     contornos, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    print(contornos)
 
     # Se houver contornos (presença de cor vermelha), consideramos que uma pessoa está presente na ROI
     if len(contornos) > 0:
@@ -27,7 +29,7 @@ def pessoa_dentro_roi(frame, roi):
         return False
 
 # Carregar o modelo treinado
-modelo = tf.keras.models.load_model('modelo')
+modelo = tf.keras.models.load_model('modelo.h5')
 
 # Acessar a câmera
 video = cv2.VideoCapture(0)
@@ -41,7 +43,8 @@ contador_entrada = 0
 contador_saida = 0
 
 # Definir uma margem de erro para considerar que a pessoa cruzou a linha de divisão
-margem_de_erro = 20
+margem_de_erro = 50
+
 
 while True:
     # Capturar frame por frame
@@ -55,10 +58,13 @@ while True:
     cv2.line(frame, (linha_divisoria, 0), (linha_divisoria, altura), (255, 255, 255), 2)
 
     # Definir regiões de interesse (ROIs) para entrada e saída
-    margem_entrada = 30
-    margem_saida = 30
+    margem_entrada = 50
+    margem_saida = 50
     roi_entrada = [linha_divisoria - margem_entrada, 0, margem_entrada, altura]
     roi_saida = [linha_divisoria, 0, margem_saida, altura]
+
+    cv2.line(frame, (linha_divisoria - margem_entrada, 0), (linha_divisoria - margem_entrada, altura), (43, 234, 255), 2)
+    cv2.line(frame, (linha_divisoria + margem_saida, 0), (linha_divisoria + margem_saida, altura), (0, 0, 255), 2)
 
     # Pré-processamento do frame
     frame_redimensionado = cv2.resize(frame, (64,64)) / 255.0
