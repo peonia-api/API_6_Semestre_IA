@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-
 # Função para verificar se uma pessoa está dentro da ROI
 def pessoa_dentro_roi(frame, roi):
     x, y, w, h = roi
@@ -11,25 +10,61 @@ def pessoa_dentro_roi(frame, roi):
     # Convertendo o frame ROI para o espaço de cores HSV
     hsv_frame = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2HSV)
 
-    # Definindo os intervalos de cores para detectar a cor vermelha
-    lower_red = np.array([0, 120, 70])
-    upper_red = np.array([10, 255, 255])
+    # Definindo os intervalos de cores para detectar a cor amarela
+    lower_yellow = np.array([20, 100, 100])
+    upper_yellow = np.array([30, 255, 255])
 
-    # Criando uma máscara para isolar os pixels vermelhos na ROI
-    mask = cv2.inRange(hsv_frame, lower_red, upper_red)
+    # Criando uma máscara para isolar os pixels amarelos na ROI
+    mask = cv2.inRange(hsv_frame, lower_yellow, upper_yellow)
 
     # Encontrando contornos na máscara
     contornos, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    print(contornos)
 
-    # Se houver contornos (presença de cor vermelha), consideramos que uma pessoa está presente na ROI
+    # Se houver contornos (presença de cor amarela), consideramos que uma pessoa está presente na ROI
     if len(contornos) > 0:
         return True
     else:
         return False
 
+
+# Função para detecção de objetos
+def detect_objects(frame):
+    # Redimensionar o frame para o tamanho esperado pelo modelo
+    resized_frame = cv2.resize(frame, (64, 64))
+
+    # Pré-processar o frame (normalização)
+    processed_frame = resized_frame / 255.0
+
+    # Expandir as dimensões do frame para corresponder à entrada esperada pelo modelo
+    input_tensor = np.expand_dims(processed_frame, axis=0)
+
+    # Realizar a detecção de objetos
+    predictions = model.predict(input_tensor)
+
+    # Iterar sobre as previsões e extrair as caixas delimitadoras e as classes
+    for prediction in predictions:
+        bbox = prediction[:4]  # As primeiras quatro coordenadas representam a caixa delimitadora (x, y, w, h)
+
+        # Ajustar as coordenadas da caixa delimitadora ao tamanho original do frame
+        bbox[0] *= resized_frame.shape[1]  # x
+        bbox[1] *= resized_frame.shape[0]  # y
+        bbox[2] *= resized_frame.shape[1]  # w
+        bbox[3] *= resized_frame.shape[0]  # h
+
+        # Converter as coordenadas para inteiros
+        bbox = bbox.astype(int)
+
+        # Extrair a classe prevista
+        classe_prevista = np.argmax(prediction[4:])
+
+        # Desenhar a caixa delimitadora no frame
+        cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), (0, 255, 0), 2)
+        cv2.putText(frame, f'Classe: {classe_prevista}', (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+    return frame
+
 # Carregar o modelo treinado
-modelo = tf.keras.models.load_model('modelo.h5')
+model = tf.keras.models.load_model('modelo.h5')
 
 # Acessar a câmera
 video = cv2.VideoCapture(0)
@@ -44,7 +79,6 @@ contador_saida = 0
 
 # Definir uma margem de erro para considerar que a pessoa cruzou a linha de divisão
 margem_de_erro = 50
-
 
 while True:
     # Capturar frame por frame
@@ -67,46 +101,37 @@ while True:
     cv2.line(frame, (linha_divisoria + margem_saida, 0), (linha_divisoria + margem_saida, altura), (0, 0, 255), 2)
 
     # Pré-processamento do frame
-    frame_redimensionado = cv2.resize(frame, (64,64)) / 255.0
+    frame_redimensionado = cv2.resize(frame, (64, 64)) / 255.0
     frame_redimensionado = np.expand_dims(frame_redimensionado, axis=0)
 
-    # Detecção de pessoas
-    predict = modelo.predict(frame_redimensionado)
-    classe_prevista = np.argmax(predict)
-    print(classe_prevista)
-    # Verificar se uma pessoa foi detectada
-    if classe_prevista == 1:
-        # Verificar a presença de uma pessoa na ROI antes de tentar verificar a direção do movimento
-        if pessoa_dentro_roi(frame, roi_entrada) or pessoa_dentro_roi(frame, roi_saida):
-            if posicao_anterior_entrada is not None and pessoa_dentro_roi(frame, roi_entrada):
-                posicao_atual_entrada = (linha_divisoria, frame.shape[0] // 2)
-                print(posicao_atual_entrada[0] < posicao_anterior_entrada[0] + margem_de_erro)
+    # Detecção de objetos
+    processed_frame = detect_objects(frame)
 
-                print("Posicao anterior entrada:", posicao_anterior_entrada)
-                print("Posicao atual entrada:", posicao_atual_entrada)
-                if posicao_atual_entrada[0] < posicao_anterior_entrada[0] + margem_de_erro:
-                    contador_entrada += 1
-                    print("Pessoa entrando")
-            elif posicao_anterior_saida is not None and pessoa_dentro_roi(frame, roi_saida):
-                posicao_atual_saida = (linha_divisoria, frame.shape[0] // 2)
-                if posicao_atual_saida[0] > posicao_anterior_saida[0] - margem_de_erro:
-                    contador_saida += 1
-                    print("Pessoa saindo")
+    # Mostrar o frame com as detecções
+    cv2.imshow('Frame', processed_frame)
+
+    # Verificar se uma pessoa entrou na ROI de entrada
+    if pessoa_dentro_roi(frame, roi_entrada):
+        if posicao_anterior_entrada is None or posicao_anterior_entrada == "outside":
+            contador_entrada += 1
+            posicao_anterior_entrada = "inside"
+            print("Entrada")
     else:
-        # Resetar a posição anterior se nenhuma pessoa for detectada
-        posicao_anterior_entrada = None
-        posicao_anterior_saida = None
+        if posicao_anterior_entrada == "inside":
+            posicao_anterior_entrada = "outside"
 
-    # Atualizar a posição anterior apenas se uma pessoa foi detectada
-    if pessoa_dentro_roi(frame, roi_entrada) or pessoa_dentro_roi(frame, roi_saida):
-        posicao_anterior_entrada = (linha_divisoria, frame.shape[0] // 2)
-        posicao_anterior_saida = (linha_divisoria, frame.shape[0] // 2)
+    # Verificar se uma pessoa saiu da ROI de saída
+    if pessoa_dentro_roi(frame, roi_saida):
+        if posicao_anterior_saida is None or posicao_anterior_saida == "outside":
+            contador_saida += 1
+            posicao_anterior_saida = "inside"
+            print("Saída")
+    else:
+        if posicao_anterior_saida == "inside":
+            posicao_anterior_saida = "outside"
 
     # Mostrar os contadores
     print(f"Entradas: {contador_entrada}, Saídas: {contador_saida}")
-
-    # Mostrar o frame com as detecções
-    cv2.imshow('Frame', frame)
 
     # Verificar se o usuário pressionou 'q' para sair do loop
     if cv2.waitKey(1) & 0xFF == ord('q'):
