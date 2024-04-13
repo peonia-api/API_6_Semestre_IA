@@ -1,9 +1,10 @@
 import tensorflow as tf
 import numpy as np
 import cv2
+import requests
 
 # Carregar o modelo pré-treinado
-model = tf.keras.models.load_model('modelo.h5')
+model = tf.keras.models.load_model('modelo')
 
 # Definir o tamanho esperado da entrada do modelo
 input_shape = model.input_shape[1:3]
@@ -41,13 +42,26 @@ while True:
 
     # Processar cada detecção
     for detection in detections:
+        print("oi")
         confidence, value = detection
         if confidence > threshold:  # Verificar se a pontuação de confiança é alta o suficiente
             print("Object detected with high confidence:", confidence)
+            print(value > previous_value)
+            print(value < previous_value)
             if value > previous_value:
                 print("Entrada detectada")
+                try:
+                    resp = requests.post("http://localhost:8080/record", json={"occurrence": "1", "room": "Laboratorio"})
+                    print(resp)
+                except Exception as e:
+                    print(f"Não foi {e}")
             elif value < previous_value:
                 print("Saída detectada")
+                try:
+                    resp = requests.post("http://localhost:8080/record", json={"occurrence": "0", "room": "Laboratorio"})
+                    print(resp)
+                except Exception as e:
+                    print(f"Não foi {e}")
             previous_value = value  # Atualizar o valor anterior para comparações futuras
 
     # Exibir o frame capturado para verificar se a câmera está funcionando
