@@ -1,0 +1,8 @@
+item {
+  id: 0
+  name: 'nao_pessoa'
+}
+item {
+  id: 1
+  name: 'pessoa'
+}
