@@ -55,7 +55,7 @@ class Deeplearning:
                 classConfidence = round(100*classScores[i])
                 classIndex = classIndexes[i]
 
-                classLabelText = self.classesList[classIndex]
+                classLabelText = self.classesList[classIndex].upper()
                 classColor = self.colorList[classIndex]
 
                 displayText = "{}: {}%".format(classLabelText, classConfidence)
