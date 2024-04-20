@@ -1,0 +1,26 @@
+<annotation>
+	<folder>val</folder>
+	<filename>thimo-van-leeuwen-IqS5MHZwh6w-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/imagens/val/thimo-van-leeuwen-IqS5MHZwh6w-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3712</width>
+		<height>5568</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1064</xmin>
+			<ymin>1607</ymin>
+			<xmax>1970</xmax>
+			<ymax>4290</ymax>
+		</bndbox>
+	</object>
+</annotation>

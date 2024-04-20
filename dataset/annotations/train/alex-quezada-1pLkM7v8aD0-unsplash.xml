@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>alex-quezada-1pLkM7v8aD0-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/imagens/train/alex-quezada-1pLkM7v8aD0-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3960</width>
+		<height>5940</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1176</xmin>
+			<ymin>1308</ymin>
+			<xmax>2957</xmax>
+			<ymax>5683</ymax>
+		</bndbox>
+	</object>
+</annotation>
