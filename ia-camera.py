@@ -8,7 +8,7 @@ modelo = "http://download.tensorflow.org/models/object_detection/tf2/20200711/ss
 
 classFile = "coco.names"
 imagePath = "/home/mateus/Imagens/ps.webp"
-videoPath = '/home/mateus/Vídeos/p01.mp4'
+videoPath = 0
 
 threshold = 0.5
 
