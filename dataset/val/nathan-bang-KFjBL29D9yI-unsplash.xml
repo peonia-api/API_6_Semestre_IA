@@ -1,0 +1,26 @@
+<annotation>
+	<folder>val</folder>
+	<filename>nathan-bang-KFjBL29D9yI-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/val/nathan-bang-KFjBL29D9yI-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3712</width>
+		<height>5568</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>900</xmin>
+			<ymin>871</ymin>
+			<xmax>2206</xmax>
+			<ymax>4724</ymax>
+		</bndbox>
+	</object>
+</annotation>

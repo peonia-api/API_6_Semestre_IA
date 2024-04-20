@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>camille-brodard-T9AgBs2IchY-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/train/camille-brodard-T9AgBs2IchY-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3500</width>
+		<height>2333</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2053</xmin>
+			<ymin>771</ymin>
+			<xmax>2680</xmax>
+			<ymax>2120</ymax>
+		</bndbox>
+	</object>
+</annotation>

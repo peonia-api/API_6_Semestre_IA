@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>joaquin-paz-y-mino-OAM2cNo5U9U-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/train/joaquin-paz-y-mino-OAM2cNo5U9U-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2768</width>
+		<height>3691</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>289</xmin>
+			<ymin>68</ymin>
+			<xmax>2500</xmax>
+			<ymax>3603</ymax>
+		</bndbox>
+	</object>
+</annotation>

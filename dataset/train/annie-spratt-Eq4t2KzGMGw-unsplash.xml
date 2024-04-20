@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>annie-spratt-Eq4t2KzGMGw-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/train/annie-spratt-Eq4t2KzGMGw-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4724</width>
+		<height>7082</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>481</xmin>
+			<ymin>1742</ymin>
+			<xmax>1989</xmax>
+			<ymax>4973</ymax>
+		</bndbox>
+	</object>
+</annotation>

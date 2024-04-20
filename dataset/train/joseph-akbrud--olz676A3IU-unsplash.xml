@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>joseph-akbrud--olz676A3IU-unsplash.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/train/joseph-akbrud--olz676A3IU-unsplash.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3024</width>
+		<height>3777</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>door</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1454</xmin>
+			<ymin>1400</ymin>
+			<xmax>1802</xmax>
+			<ymax>2292</ymax>
+		</bndbox>
+	</object>
+</annotation>
