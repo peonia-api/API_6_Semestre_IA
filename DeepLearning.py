@@ -94,3 +94,34 @@ class Deeplearning:
         cv2.imshow("Result ", image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    
+    def predictVideo(self, videopath, threshold = 0.5):
+        cap = cv2.VideoCapture(videopath)
+
+        if(cap.isOpened() == False):
+            print("Erro ao abrir ...")
+            return
+        
+        (success, image) = cap.read()
+
+        startTime = 0
+
+        while success:
+            currentTime = time.time()
+
+            fps = 1/(currentTime - startTime)
+            startTime = currentTime
+
+            bboxImage = self.createBoundigBox(image, threshold)
+
+            cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
+            cv2.imshow("Result ", bboxImage)
+
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord("q"):
+                break
+
+            (success, image) = cap.read()
+
+        cv2.destroyAllWindows()
