@@ -1,4 +1,9 @@
 item {
-  id: 82
+  id: 1
+  name: 'person'
+}
+
+item {
+  id: 2
   name: 'door'
 }
