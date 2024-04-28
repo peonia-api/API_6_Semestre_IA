@@ -43,10 +43,8 @@ def create_tf_example(group, image_path):
     return tf_example
 
 def class_text_to_int(row_label):
-    if row_label == 'door':
-        return 82
-    else:
-        return None
+    class_dict = {"person": 1, "door": 2}
+    return class_dict.get(row_label, -1)
 
 def xml_to_data(path):
     data = []
