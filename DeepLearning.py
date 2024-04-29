@@ -32,6 +32,10 @@ class Deeplearning:
 
         print("Model " + self.modelName + ' loaded success ...')
 
+    def personIO(self, xmin, xmax, ymin, ymax):
+        print('OIIIII')
+        print(xmin, xmax, ymin, ymax)
+
     def createBoundigBox(self, image, threshold = 0.5):
         try:
             inputTensor = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2RGB)
@@ -59,6 +63,7 @@ class Deeplearning:
 
                     classLabelText = self.classesList[classIndex].upper()
                     print(classLabelText)
+                    
                     classColor = self.colorList[classIndex]
 
                     displayText = "{}: {}%".format(classLabelText, classConfidence)
@@ -68,22 +73,25 @@ class Deeplearning:
                     xmin, xmax, ymin, ymax = (xmin * imW, xmax * imW, ymin * imH, ymax * imH)
                     xmin, xmax, ymin, ymax = int(xmin), int(xmax), int(ymin), int(ymax) 
 
-                    cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color=classColor, thickness=1)
-                    cv2.putText(image, displayText, (xmin, ymin - 10), cv2.FONT_HERSHEY_PLAIN, 1, classColor, 2)
+                    if classLabelText == 'PERSON':
+                        self.personIO(xmin, xmax, ymin, ymax)
 
-                    lineWidth = min(int((xmax -  xmin) * 0.2), int((ymax - ymin)*0.2))
+                        cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color=classColor, thickness=1)
+                        cv2.putText(image, displayText, (xmin, ymin - 10), cv2.FONT_HERSHEY_PLAIN, 1, classColor, 2)
 
-                    cv2.line(image, (xmin, ymin), (xmin + lineWidth, ymin), classColor, thickness=5)
-                    cv2.line(image, (xmin, ymin), (xmin, ymin + lineWidth), classColor, thickness=5)
-                    
-                    cv2.line(image, (xmax, ymin), (xmax - lineWidth, ymin), classColor, thickness=5)
-                    cv2.line(image, (xmax, ymin), (xmax, ymin + lineWidth), classColor, thickness=5)
-            
-                    cv2.line(image, (xmin, ymax), (xmin + lineWidth, ymax), classColor, thickness=5)
-                    cv2.line(image, (xmin, ymax), (xmin, ymax - lineWidth), classColor, thickness=5)
-                    
-                    cv2.line(image, (xmax, ymax), (xmax - lineWidth, ymax), classColor, thickness=5)
-                    cv2.line(image, (xmax, ymax), (xmax, ymax - lineWidth), classColor, thickness=5)
+                        lineWidth = min(int((xmax -  xmin) * 0.2), int((ymax - ymin)*0.2))
+
+                        cv2.line(image, (xmin, ymin), (xmin + lineWidth, ymin), classColor, thickness=5)
+                        cv2.line(image, (xmin, ymin), (xmin, ymin + lineWidth), classColor, thickness=5)
+                        
+                        cv2.line(image, (xmax, ymin), (xmax - lineWidth, ymin), classColor, thickness=5)
+                        cv2.line(image, (xmax, ymin), (xmax, ymin + lineWidth), classColor, thickness=5)
+                
+                        cv2.line(image, (xmin, ymax), (xmin + lineWidth, ymax), classColor, thickness=5)
+                        cv2.line(image, (xmin, ymax), (xmin, ymax - lineWidth), classColor, thickness=5)
+                        
+                        cv2.line(image, (xmax, ymax), (xmax - lineWidth, ymax), classColor, thickness=5)
+                        cv2.line(image, (xmax, ymax), (xmax, ymax - lineWidth), classColor, thickness=5)
         except:
             print()
         

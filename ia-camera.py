@@ -8,9 +8,9 @@ modelo = "http://download.tensorflow.org/models/object_detection/tf2/20200711/ss
 
 classFile = "coco.names"
 imagePath = "/home/mateus/Imagens/ps.webp"
-videoPath = 0
+videoPath = "person.mp4"
 
-threshold = 0.5
+threshold = 0.2
 
 
 detector = Deeplearning()
