@@ -14,13 +14,13 @@ class Deeplearning:
         self.cont = 0
         self.line_x = 550
         self.line_height = 1000
-        self.person_ids = set()
+        self.person_ids = []
         self.ponto_esquerdo = (650, 380)
         self.ponto_direito = (280, 200)
         self.fator_reducao = 0.2
         self.novo_ponto_direito = (self.ponto_esquerdo[0] + int((self.ponto_direito[0] - self.ponto_esquerdo[0]) * self.fator_reducao),
                                         self.ponto_esquerdo[1] + int((self.ponto_direito[1] - self.ponto_esquerdo[1]) * self.fator_reducao))
-        self.person_info = {}
+        
  
  
     def readClasses(self, classesFilePath):
@@ -68,9 +68,14 @@ class Deeplearning:
         print(line_area_end_x)
  
         print(obj_center_x)
-        if obj_center_x > self.novo_ponto_direito[0]:
+        if obj_center_x > self.novo_ponto_direito[0] and person_id not in self.person_ids:
+            print('passou.................................................................')
             self.cont += 1
- 
+            self.person_ids.append(person_id)
+        if xmax < self.novo_ponto_direito[0] and person_id in self.person_ids:
+            print("Pessoa saiu pela porta!")
+            self.cont -= 1 
+            self.person_ids.remove(person_id)
  
         # print(f'Verificação {line_area_start_x <= obj_center_x <= line_area_end_x }')
         # if line_area_start_x <= obj_center_x <= line_area_end_x:
@@ -114,7 +119,7 @@ class Deeplearning:
                         cv2.rectangle(image, (x1, y1), (x1 + w, y1 + h), color=(255, 0, 255), thickness=2)
                         cv2.putText(image, displayText, (x1, y1 - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255), 2)
                         print( x1, y1, x2, y2)
-                        self.personIO(box, classLabelText)
+                        self.personIO(x1, x2, w, h, int(box.id.item()))
  
         except Exception as e:
             print(e)
