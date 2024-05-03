@@ -10,13 +10,13 @@ classFile = "coco.names"
 imagePath = "/home/mateus/Imagens/ps.webp"
 videoPath = "entrada01.mp4"
 
-threshold = 0.2
+threshold = 0.5
 
 
 detector = Deeplearning()
 detector.readClasses(classFile)
 
-detector.downloadModel(modelo)
-detector.loadModel()
+#detector.downloadModel(modelo)
+#detector.loadModel()
 #detector.predictImage(imagePath, threshold)
 detector.predictVideo(videoPath, threshold)
