@@ -1,8 +1,6 @@
-import cv2,  time, os, tensorflow as tf
+import cv2,  time, os
 import numpy as np
-from tensorflow.python.keras.utils.data_utils import get_file
 import requests
-import uuid
 from ultralytics import YOLO
  
  
@@ -10,7 +8,6 @@ np.random.seed(22)
  
 class Deeplearning:
     def __init__(self):
-        self.model = YOLO('yolov8n.pt')
         self.cont = 0
         self.line_x = 550
         self.line_height = 1000
@@ -36,18 +33,20 @@ class Deeplearning:
         self.cacheDir = './pretrained_models'
  
         os.makedirs(self.cacheDir, exist_ok=True)
- 
-        get_file(fname=fileName, origin=modelUrl, cache_dir=self.cacheDir, cache_subdir="checkpoints", extract=True)
+        path = os.path.join(self.cacheDir, "checkpoints", fileName)
+        if not os.path.exists(path):
+            print(f"Downloading model {fileName} ...")
+            response = requests.get(modelUrl)
+            with open(path, 'wb') as f:
+                f.write(response.content)
+            print("Download completed.")
  
     def loadModel(self):
         print("Loading Model " + self.modelName)
-        tf.keras.backend.clear_session()
-        self.model = tf.saved_model.load(os.path.join(self.cacheDir, "checkpoints", self.modelName, "saved_model"))
+
+        self.model = YOLO(os.path.join(self.cacheDir, "checkpoints", self.modelName))
  
         print("Model " + self.modelName + ' loaded success ...')
- 
- 
- 
  
  
     def personIO(self, xmin, xmax, ymin, ymax, person_id):
@@ -82,22 +81,22 @@ class Deeplearning:
  
     def createBoundigBox(self, image, threshold=0.5):
         try:           
-            results = self.model.track(image, persist=True)
-            for r in results:
-                boxes = r.boxes
+            trackers = self.model.track(image, persist=True)
+            for tracker in trackers:
+                boxes = tracker.boxes
                 for box in boxes:
-                    x1, y1, x2, y2 = map(int, box.xyxy[0])
-                    w, h = x2 - x1, y2 - y1
+                    xmin, ymin, xmax, ymax = box.xyxy[0]
+                    xmin, ymin, xmax, ymax = int(xmin), int(ymin), int(xmax), int(ymax)
+                    w, h = xmax - xmin, ymax - ymin
                     classIndex = int(box.cls[0])
                     classLabelText = self.classesList[classIndex].upper()
                     print(classLabelText)
-                    acuracia = float(box.conf) 
-                    if classLabelText == 'PERSON' and acuracia >= threshold:
-                        displayText = "{}: {:.2f}%".format(classLabelText, acuracia)
-                        cv2.rectangle(image, (x1, y1), (x1 + w, y1 + h), color=(255, 0, 255), thickness=2)
-                        cv2.putText(image, displayText, (x1, y1 - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255), 2)
-                        print( x1, y1, x2, y2)
-                        self.personIO(x1, x2, w, h, int(box.id.item()))
+                    
+                    if classLabelText == 'PERSON' and float(box.conf) >= threshold:
+                        displayText = "{}: {:.2f}%".format(classLabelText, float(box.conf))
+                        cv2.rectangle(image, (xmin, ymin), (xmin + w, ymin + h), color=(255, 0, 255), thickness=2)
+                        cv2.putText(image, displayText, (xmin, ymin - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255), 2)
+                        self.personIO(xmin, xmax, w, h, int(box.id.item()))
                     elif self.cont == 0:
                         self.person_ids = {}
  
