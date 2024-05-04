@@ -14,7 +14,7 @@ class Deeplearning:
         self.cont = 0
         self.line_x = 550
         self.line_height = 1000
-        self.person_ids = []
+        self.person_ids = {}
         self.ponto_esquerdo = (650, 380)
         self.ponto_direito = (280, 200)
         self.fator_reducao = 0.2
@@ -59,47 +59,25 @@ class Deeplearning:
         obj_center_x = (xmin + xmax) / 2
         obj_center_y = (ymin + ymax) / 2
  
-        # Define uma área ao redor da linha onde a pessoa é considerada para contagem
-        line_margin = 20  # Margem em pixels
+        line_margin = 20  
         line_area_start_x = self.line_x - line_margin
         line_area_end_x = self.line_x + line_margin
- 
-        print(line_area_start_x)
-        print(line_area_end_x)
- 
-        print(obj_center_x)
-        if obj_center_x > self.novo_ponto_direito[0] and person_id not in self.person_ids:
-            print('passou.................................................................')
-            self.cont += 1
-            self.person_ids.append(person_id)
-        if xmax < self.novo_ponto_direito[0] and person_id in self.person_ids:
-            print("Pessoa saiu pela porta!")
+      
+     
+        if xmax < self.novo_ponto_direito[0] and person_id not in self.person_ids.keys():
+            self.person_ids[person_id] = 'saida'
+        elif xmax < self.novo_ponto_direito[0] and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'entrada':
             self.cont -= 1 
-            self.person_ids.remove(person_id)
- 
-        # print(f'Verificação {line_area_start_x <= obj_center_x <= line_area_end_x }')
-        # if line_area_start_x <= obj_center_x <= line_area_end_x:
-        #     print("A pessoa está na linha.")
-        #     if obj_center_x > self.line_x:
-        #         print("A pessoa está indo para a direita.")
-        #         self.cont += 1
-        #     elif obj_center_x < self.line_x and line_area_start_x <= obj_center_x:
-        #         print("A pessoa está indo para a esquerda.")
-        #         self.cont -= 1
-        # if line_area_start_x <= obj_center_x <= line_area_end_x:
-        #     print(xmax < self.line_x)
-        #     # Verifica se a pessoa está indo da direita para a esquerda (entrada)
-        #     if xmax < self.line_x:
-        #         print("Pessoa saiu pela porta!")
-        #         self.cont -= 1  # Decrementa o contador de saída
- 
-        #     if xmax > self.line_x:
-        #         print("Pessoa entrou pela porta!")
-        #         self.cont += 1  # Incrementa o contador de entrada
- 
-            # Verifica se a pessoa está indo da esquerda para a direita (saída)
- 
-        # print(self.person_ids)
+            del self.person_ids[person_id]
+            self.postIO('http://localhost:8080/record', 0, 'Laboratorio')
+
+        if obj_center_x > line_area_end_x and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
+            self.cont += 1
+            self.person_ids[person_id] = 'entrada'
+            self.postIO('http://localhost:8080/record', 1, 'Laboratorio')
+        elif obj_center_x > line_area_end_x and person_id not in self.person_ids.keys():
+            self.person_ids[person_id] = 'entrada'
+            
  
  
     def createBoundigBox(self, image, threshold=0.5):
@@ -115,11 +93,13 @@ class Deeplearning:
                     print(classLabelText)
                     acuracia = float(box.conf) 
                     if classLabelText == 'PERSON' and acuracia >= threshold:
-                        displayText = "ID {}, {}: {:.2f}%".format(int(box.id.item()),classLabelText, acuracia)
+                        displayText = "{}: {:.2f}%".format(classLabelText, acuracia)
                         cv2.rectangle(image, (x1, y1), (x1 + w, y1 + h), color=(255, 0, 255), thickness=2)
                         cv2.putText(image, displayText, (x1, y1 - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255), 2)
                         print( x1, y1, x2, y2)
                         self.personIO(x1, x2, w, h, int(box.id.item()))
+                    elif self.cont == 0:
+                        self.person_ids = {}
  
         except Exception as e:
             print(e)
@@ -172,9 +152,9 @@ class Deeplearning:
         cv2.destroyAllWindows()
  
  
-    def postIO(route,occurrence, room):
+    def postIO(self,route,occurrence, room):
         try:
-            resp = requests.post(route, json={"occurrence": occurrence, "room": room})
+            resp = requests.post(route, json={"occurrence": occurrence, "room": room, 'cont': self.cont})
             print(resp)
         except Exception as e:
             print(f"Erro ao enviar a solicitação HTTP: {e}")
