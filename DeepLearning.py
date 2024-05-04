@@ -8,7 +8,7 @@ np.random.seed(22)
  
 class Deeplearning:
     def __init__(self):
-        self.cont = 0
+        self.count = 0
         self.line_x = 550
         self.line_height = 1000
         self.person_ids = {}
@@ -38,7 +38,7 @@ class Deeplearning:
             print(f"Downloading model {fileName} ...")
             response = requests.get(modelUrl)
             with open(path, 'wb') as f:
-                f.write(response.content)
+                f.write(response.countent)
             print("Download completed.")
  
     def loadModel(self):
@@ -47,8 +47,7 @@ class Deeplearning:
         self.model = YOLO(os.path.join(self.cacheDir, "checkpoints", self.modelName))
  
         print("Model " + self.modelName + ' loaded success ...')
- 
- 
+
     def personIO(self, xmin, xmax, ymin, ymax, person_id):
         print('OIIIII')
         print(xmin, xmax, ymin, ymax)
@@ -66,19 +65,17 @@ class Deeplearning:
         if xmax < self.novo_ponto_direito[0] and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'saida'
         elif xmax < self.novo_ponto_direito[0] and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'entrada':
-            self.cont -= 1 
+            self.count -= 1 
             del self.person_ids[person_id]
-            self.postIO('http://localhost:8080/record', 0, 'Laboratorio')
+            self.postIO('http://localhost:8082/record', 0, 'Laboratorio')
 
         if obj_center_x > line_area_end_x and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
-            self.cont += 1
+            self.count += 1
             self.person_ids[person_id] = 'entrada'
-            self.postIO('http://localhost:8080/record', 1, 'Laboratorio')
+            self.postIO('http://localhost:8082/record', 1, 'Laboratorio')
         elif obj_center_x > line_area_end_x and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'entrada'
-            
- 
- 
+
     def createBoundigBox(self, image, threshold=0.5):
         try:           
             trackers = self.model.track(image, persist=True)
@@ -97,7 +94,7 @@ class Deeplearning:
                         cv2.rectangle(image, (xmin, ymin), (xmin + w, ymin + h), color=(255, 0, 255), thickness=2)
                         cv2.putText(image, displayText, (xmin, ymin - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255), 2)
                         self.personIO(xmin, xmax, w, h, int(box.id.item()))
-                    elif self.cont == 0:
+                    elif self.count == 0:
                         self.person_ids = {}
  
         except Exception as e:
@@ -139,7 +136,7 @@ class Deeplearning:
  
  
             cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
-            cv2.putText(bboxImage, "Quantidade: " + str(self.cont), (500,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
+            cv2.putText(bboxImage, "Quantidade: " + str(self.count), (500,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
             cv2.imshow("Result ", bboxImage)
  
             key = cv2.waitKey(1) & 0xFF
@@ -153,7 +150,7 @@ class Deeplearning:
  
     def postIO(self,route,occurrence, room):
         try:
-            resp = requests.post(route, json={"occurrence": occurrence, "room": room, 'cont': self.cont})
+            resp = requests.post(route, json={"occurrence": occurrence, "room": room, 'count': self.count})
             print(resp)
         except Exception as e:
             print(f"Erro ao enviar a solicitação HTTP: {e}")
