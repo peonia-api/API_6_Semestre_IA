@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>74.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/imagens/train/74.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2000</width>
+		<height>2996</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>person</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>732</xmin>
+			<ymin>419</ymin>
+			<xmax>1460</xmax>
+			<ymax>2882</ymax>
+		</bndbox>
+	</object>
+</annotation>

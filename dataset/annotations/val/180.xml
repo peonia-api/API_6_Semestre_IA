@@ -1,0 +1,26 @@
+<annotation>
+	<folder>val</folder>
+	<filename>180.jpg</filename>
+	<path>/home/mateus/Documentos/API/API_6_Semestre_IA/dataset/imagens/val/180.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2000</width>
+		<height>2500</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>person</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>614</xmin>
+			<ymin>683</ymin>
+			<xmax>1290</xmax>
+			<ymax>2333</ymax>
+		</bndbox>
+	</object>
+</annotation>
