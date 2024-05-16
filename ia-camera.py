@@ -8,17 +8,17 @@ from DeepLearning import *
 
 modelo = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt"
 
-classFile = "coco.names"
+classFile = "names.names"
 imagePath = "/home/mateus/Imagens/ps.webp"
-videoPath = "entrada01.mp4"
+videoPath = "person.mp4"
 
-threshold = 0.5
+threshold = 0.4
 
 
 detector = Deeplearning()
 detector.readClasses(classFile)
 
-detector.downloadModel(modelo)
-detector.loadModel()
+#detector.downloadModel(modelo)
+detector.loadModel('best.pt')
 #detector.predictImage(imagePath, threshold)
 detector.predictVideo(videoPath, threshold)
