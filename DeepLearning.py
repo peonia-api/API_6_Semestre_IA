@@ -61,7 +61,7 @@ class Deeplearning:
         line_margin = 20  
         line_area_start_x = self.line_x - line_margin
         line_area_end_x = self.line_x + line_margin
-        line = ((self.location[0] - 10) + (self.location[2] - 20)) // 2
+        line = ((self.location[0]) + (self.location[2] - 20)) // 2
 
         print(obj_center_x)
         print(line)
@@ -82,7 +82,7 @@ class Deeplearning:
             self.count += 1
             self.person_ids[person_id] = 'entrada'
             self.postIO('http://localhost:8082/record', 1, 'Laboratorio')
-        elif xmin + ymin >= line and person_id not in self.person_ids.keys():
+        elif xmin + ymin >= line  and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'entrada'
 
 
@@ -115,9 +115,9 @@ class Deeplearning:
                     print(self.location)
                     
                     if classLabelText == 'DOOR' and float(box.conf) >= 0.2:
-                        self.location = (xmin, ymin, xmin + w, ymin + h)
+                        self.location = (xmin, ymin, xmin + w, ymin + h, float(box.conf))
                     
-                    displayText = "{}".format('DOOR')
+                    displayText = "{}:  {:.2f}%".format('DOOR', self.location[4])
                     cv2.rectangle(image, (self.location[0], self.location[1]), (self.location[2], self.location[3]), color=(165,100,25), thickness=2)
                     cv2.putText(image, displayText, (self.location[0], self.location[1] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (165,100,25), 2)
                         
@@ -147,7 +147,7 @@ class Deeplearning:
         cv2.destroyAllWindows()
  
  
-    def predictVideo(self, videopath, threshold = 0.5):
+    def predictVideo(self, videopath, zone ,threshold = 0.5):
         cap = cv2.VideoCapture(videopath)
  
         if(cap.isOpened() == False):
@@ -170,7 +170,7 @@ class Deeplearning:
  
             cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
             cv2.putText(bboxImage, "Quantidade: " + str(self.count), (20,170), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
-            cv2.imshow("Result ", bboxImage)
+            cv2.imshow(zone, bboxImage)
  
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
