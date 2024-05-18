@@ -61,25 +61,28 @@ class Deeplearning:
         line_margin = 20  
         line_area_start_x = self.line_x - line_margin
         line_area_end_x = self.line_x + line_margin
-        line = (self.location[0] + self.location[2]) // 2
+        line = ((self.location[0] - 10) + (self.location[2] - 20)) // 2
 
         print(obj_center_x)
         print(line)
-        print(xmax)
+        print(xmax, xmin, ymax, ymin)
+        print(self.person_ids)
+        print((obj_center_y + obj_center_x) / 2)
       
      
-        if xmax < line and person_id not in self.person_ids.keys():
+        if xmin + ymin < line and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'saida'
-        elif xmax < line and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'entrada':
+        elif xmin + ymin < line and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'entrada':
             self.count -= 1 
-            del self.person_ids[person_id]
+            # del self.person_ids[person_id]
+            self.person_ids[person_id] = None
             self.postIO('http://localhost:8082/record', 0, 'Laboratorio')
 
-        if obj_center_x >= line and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
+        if xmin + ymin >= line and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
             self.count += 1
             self.person_ids[person_id] = 'entrada'
             self.postIO('http://localhost:8082/record', 1, 'Laboratorio')
-        elif obj_center_x >= line and person_id not in self.person_ids.keys():
+        elif xmin + ymin >= line and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'entrada'
 
 
@@ -166,7 +169,7 @@ class Deeplearning:
  
  
             cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
-            cv2.putText(bboxImage, "Quantidade: " + str(self.count), (500,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
+            cv2.putText(bboxImage, "Quantidade: " + str(self.count), (20,170), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
             cv2.imshow("Result ", bboxImage)
  
             key = cv2.waitKey(1) & 0xFF

@@ -10,9 +10,9 @@ modelo = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n
 
 classFile = "names.names"
 imagePath = "/home/mateus/Imagens/ps.webp"
-videoPath = "person.mp4"
+videoPath = "entrada02.mp4"
 
-threshold = 0.4
+threshold = 0.3
 
 
 detector = Deeplearning()
