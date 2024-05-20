@@ -23,7 +23,19 @@ import os
 import subprocess
 import multiprocessing
 import shutil
+import requests
 
+
+def getRedZones(route):
+        try:
+            resp = requests.get(route)
+            print(resp)
+            return resp
+        except Exception as e:
+            print(f"Erro ao enviar a solicitação HTTP: {e}")
+            return None
+
+teste = getRedZones('http://localhost:8080/redZones')
 
 
 data = [
