@@ -28,11 +28,11 @@ import shutil
 
 data = [
     {
-        "url": 'entrada02.mp4',
+        "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada02.mp4?t=2024-05-20T12%3A35%3A34.477Z',
         "zone": 'Laboratorio'
     },
     {
-        "url": 'entrada03.mp4',
+        "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada05.mp4',
         "zone": 'Cozinha'
     }
 ]
@@ -82,7 +82,7 @@ def main():
     shutil.copy('DeepLearning.py', 'readzones')
     shutil.copy('names.names', 'readzones')
     shutil.copy('entrada03.mp4', 'readzones')
-    shutil.copy('entrada04.mp4', 'readzones')
+    shutil.copy('entrada02.mp4', 'readzones')
     
     for item in data:
         arquivo(item['zone'], item['url'], folder_path)

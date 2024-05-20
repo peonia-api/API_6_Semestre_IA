@@ -78,7 +78,7 @@ class Deeplearning:
             self.person_ids[person_id] = None
             self.postIO('http://localhost:8082/record', 0, 'Laboratorio')
 
-        if xmin + ymin >= line and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
+        if xmin + ymin >= (line + 30) and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
             self.count += 1
             self.person_ids[person_id] = 'entrada'
             self.postIO('http://localhost:8082/record', 1, 'Laboratorio')
