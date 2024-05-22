@@ -29,25 +29,25 @@ import requests
 def getRedZones(route):
         try:
             resp = requests.get(route)
-            print(resp)
-            return resp
+            print(resp.json())
+            return resp.json()
         except Exception as e:
             print(f"Erro ao enviar a solicitação HTTP: {e}")
             return None
 
-teste = getRedZones('http://localhost:8080/redZones')
+data = getRedZones('http://localhost:8080/redZones')
 
 
-data = [
-    {
-        "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada02.mp4?t=2024-05-20T12%3A35%3A34.477Z',
-        "zone": 'Laboratorio'
-    },
-    {
-        "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada05.mp4',
-        "zone": 'Cozinha'
-    }
-]
+# data = [
+#     {
+#         "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada02.mp4?t=2024-05-20T12%3A35%3A34.477Z',
+#         "zone": 'Laboratorio'
+#     },
+#     {
+#         "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada05.mp4',
+#         "zone": 'Cozinha'
+#     }
+# ]
 
 def arquivo(nome, url, folder_path):
 
@@ -93,11 +93,11 @@ def main():
     os.makedirs(folder_path, exist_ok=True)
     shutil.copy('DeepLearning.py', 'readzones')
     shutil.copy('names.names', 'readzones')
-    shutil.copy('entrada03.mp4', 'readzones')
-    shutil.copy('entrada02.mp4', 'readzones')
+    # shutil.copy('entrada03.mp4', 'readzones')
+    # shutil.copy('entrada02.mp4', 'readzones')
     
     for item in data:
-        arquivo(item['zone'], item['url'], folder_path)
+        arquivo(item['name'], item['cameraSpot'], folder_path)
     
     scripts = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.py')]
 
