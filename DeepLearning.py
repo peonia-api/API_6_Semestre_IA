@@ -76,12 +76,12 @@ class Deeplearning:
             self.count -= 1 
             # del self.person_ids[person_id]
             self.person_ids[person_id] = None
-            self.postIO('http://localhost:8082/record', 0, 'Laboratorio')
+            self.postIO('http://localhost:8082/record', 0, self.redZone)
 
         if xmin + ymin >= (line + 30) and person_id in self.person_ids.keys() and self.person_ids[person_id] == 'saida':
             self.count += 1
             self.person_ids[person_id] = 'entrada'
-            self.postIO('http://localhost:8082/record', 1, 'Laboratorio')
+            self.postIO('http://localhost:8082/record', 1, self.redZone)
         elif xmin + ymin >= line  and person_id not in self.person_ids.keys():
             self.person_ids[person_id] = 'entrada'
 
@@ -149,7 +149,7 @@ class Deeplearning:
  
     def predictVideo(self, videopath, zone, limit,threshold = 0.5):
         cap = cv2.VideoCapture(videopath)
- 
+        self.redZone = zone
         if(cap.isOpened() == False):
             print("Erro ao abrir ...")
             return
