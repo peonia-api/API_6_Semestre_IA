@@ -147,7 +147,7 @@ class Deeplearning:
         cv2.destroyAllWindows()
  
  
-    def predictVideo(self, videopath, zone ,threshold = 0.5):
+    def predictVideo(self, videopath, zone, limit,threshold = 0.5):
         cap = cv2.VideoCapture(videopath)
  
         if(cap.isOpened() == False):
@@ -166,10 +166,16 @@ class Deeplearning:
  
             bboxImage = self.createBoundigBox(image, threshold)
             cv2.line(image, self.ponto_esquerdo, self.novo_ponto_direito, (255, 255, 0), thickness=1)
- 
+            if int(self.count) > int(limit):
+                self.colorLimit = (0, 0, 255)
+            elif int(self.count) == int(limit):
+                self.colorLimit = (207, 14, 14)
+            else:
+                self.colorLimit = (0,255,0)
  
             cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20,70), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
             cv2.putText(bboxImage, "Quantidade: " + str(self.count), (20,170), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0),2)
+            cv2.putText(bboxImage, "Limite: " + str(limit), (20,270), cv2.FONT_HERSHEY_PLAIN, 2, self.colorLimit, 2)
             cv2.imshow(zone, bboxImage)
  
             key = cv2.waitKey(1) & 0xFF

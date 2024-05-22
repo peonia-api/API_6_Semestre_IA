@@ -49,7 +49,7 @@ data = getRedZones('http://localhost:8080/redZones')
 #     }
 # ]
 
-def arquivo(nome, url, folder_path):
+def arquivo(nome, url, limit,folder_path):
 
     # Caminho para o novo arquivo
     file_path = os.path.join(folder_path, f'{nome}.py')
@@ -67,7 +67,7 @@ threshold = 0.3
 detector = Deeplearning()
 detector.readClasses(classFile)
 detector.loadModel(modelo)
-detector.predictVideo(videoPath, "{nome}" ,threshold)
+detector.predictVideo(videoPath, "{nome}" , "{limit}",threshold)
     """
 
     # Cria e escreve em um novo arquivo
@@ -97,7 +97,7 @@ def main():
     # shutil.copy('entrada02.mp4', 'readzones')
     
     for item in data:
-        arquivo(item['name'], item['cameraSpot'], folder_path)
+        arquivo(item['name'], item['cameraSpot'], item['personLimit'],folder_path)
     
     scripts = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.py')]
 
