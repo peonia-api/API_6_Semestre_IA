@@ -35,19 +35,21 @@ def getRedZones(route):
             print(f"Erro ao enviar a solicitação HTTP: {e}")
             return None
 
-data = getRedZones('http://localhost:8080/redZones')
+#data = getRedZones('http://localhost:8080/redZones')
 
 
-# data = [
-#     {
-#         "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada02.mp4?t=2024-05-20T12%3A35%3A34.477Z',
-#         "zone": 'Laboratorio'
-#     },
-#     {
-#         "url": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada05.mp4',
-#         "zone": 'Cozinha'
-#     }
-# ]
+data = [
+    {
+        "cameraSpot": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada02.mp4?t=2024-05-20T12%3A35%3A34.477Z',
+        "name": 'Laboratorio',
+        "personLimit": "2"
+    },
+    {
+        "cameraSpot": 'https://aognrcnvbkseqxisxxzm.supabase.co/storage/v1/object/public/videos/entrada05.mp4',
+        "name": 'Cozinha',
+        "personLimit": "3"
+    }
+]
 
 def arquivo(nome, url, limit,folder_path):
 
@@ -77,7 +79,12 @@ detector.predictVideo(videoPath, "{nome}" , "{limit}",threshold)
 
 
 
-
+def remove_folder(folder_path):
+    if os.path.exists(folder_path):
+        try:
+            shutil.rmtree(folder_path)
+        except Exception as e:
+            print(f"Erro ao remover a pasta {folder_path}: {e}")
 
 
 
@@ -110,5 +117,6 @@ def main():
     for process in processes:
         process.join()
 
+    remove_folder('readzones')
 if __name__ == "__main__":
     main()
